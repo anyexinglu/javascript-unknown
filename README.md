@@ -8,8 +8,8 @@ Unknown things of javascript, inspired by https://github.com/getify/You-Dont-Kno
 
 ```javascript
 a = {
-	get val() {
-		return this.val
+  get val() {
+    return this.val
 	},
 	set val(x) {
 		this.val = x;
