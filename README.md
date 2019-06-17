@@ -10,7 +10,7 @@ Unknown things of javascript, inspired by https://github.com/getify/You-Dont-Kno
 a = {
   get val() {
     return this.val
-	},
+  },
 	set val(x) {
 		this.val = x;
 	}
@@ -26,20 +26,8 @@ Uncaught RangeError: Maximum call stack size exceeded
     at Object.set val [as val] (<anonymous>:6:12)
 ```
 
-get和set的变量必须是私有属性。改成这样就没错了：
-```
-a = {
-	get val() {
-		return this._val
-	},
-	set val(x) {
-		this._val = x;
-	}
-}
-a.val = 1
-console.log(a.val)  // 同console.log(a._val)，输出：1
-
-```
+`this.val = x` invokes the setter again, which leads to an infinite loop. 
+[reference](https://stackoverflow.com/questions/43780287/javascript-uncaught-rangeerror-maximum-call-stack-size-exceeded)
 </p>
 </details>
 ---
