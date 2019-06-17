@@ -11,9 +11,9 @@ a = {
   get val() {
     return this.val
   },
-	set val(x) {
-		this.val = x;
-	}
+  set val(x) {
+    this.val = x;
+  }
 }
 a.val = 1
 console.log(a.val)
