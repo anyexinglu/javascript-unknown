@@ -73,7 +73,7 @@ delay(obj.getA, 100);
 Output: `getA: undefined`. Why?
 
 - `func` is just a reference to `obj.getA`
-- `func(args)` will execute `obj.getA()` in global environment, and `this.a` refers to `window.a`, turns to be `undefined`.
+- `func(args)` will execute in global environment, and `this.a` refers to `window.a`, turns to be `undefined`.
 
 The right way:
 
