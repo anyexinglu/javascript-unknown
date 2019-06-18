@@ -70,7 +70,9 @@ delay(obj.getA, 100);
 
 output: `getA: undefined`
 
-`func(args)` is the same to `getA(window)`. Here is the right way:
+`func(args)` is the same to `getA(window)`.
+
+Here is the right way:
 
 ```javascript
 function delay(func, context, ms) {
@@ -98,18 +100,45 @@ The `context` should be provided, in order to output `getA: 1`
 ###### 3 What's the output?
 
 ```javascript
-function sayHi() {
-  console.log(name);
-  console.log(age);
-  var name = "Lydia";
-  let age = 21;
-}
-
-sayHi();
+obj = {
+  a: 1,
+  getA() {
+    console.log("getA: ", this.a);
+  }
+};
+setTimeout(obj.getA, 100);
 ```
 
 <details><summary><b>Answer</b></summary>
 <p>
+
+output: `getA: undefined`
+
+</p>
+</details>
+
+---
+
+###### 4 What's the output?
+
+```javascript
+function doFoo(fn) {
+  fn();
+}
+function getA() {
+  console.log(this.a);
+}
+obj = {
+  a: 1,
+  getA
+};
+doFoo(obj.getA);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+output: `getA: undefined`
 
 </p>
 </details>
