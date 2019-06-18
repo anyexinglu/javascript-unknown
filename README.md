@@ -1,6 +1,6 @@
 Unknown things of javascript, inspired by [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS) and [javascript-questions](https://github.com/anyexinglu/javascript-questions)
 
-BTW, all the code runs within `loose` environment
+BTW, all the following examples are running in non-strict mode.
 
 ---
 
@@ -134,7 +134,7 @@ function doFoo(fn) {
   fn();
 }
 function getA() {
-  console.log(this.a);
+  console.log("getA: ", this.a);
 }
 obj = {
   a: 1,
@@ -147,6 +147,27 @@ doFoo(obj.getA);
 <p>
 
 Output: `getA: undefined`.
+
+Another case will also output `getA: undefined`:
+
+```javascript
+obj = {
+  a: 1,
+  getA() {
+    console.log("getA: ", this.a);
+  }
+};
+let getA = obj.getA;
+getA();
+```
+
+Why?
+
+- It's `Implicitly Lost`
+- Even though getA appears to be a reference to obj.getA, in fact, it's really just another reference to getA itself. Moreover, the call-site is what matters, and the call-site is getA(), which is a plain, un-decorated call and thus the `default binding` applies.
+- 被隐式绑定的函数会丢失绑定对象，也就是说它会应用默认绑定，从而把 this 绑定到全局对象或者 undefined 上，取决于是否是严格模式。
+
+[reference](https://github.com/getify/You-Dont-Know-JS/blob/master/this%20%26%20object%20prototypes/ch2.md#implicitly-lost)
 
 </p>
 </details>
@@ -209,8 +230,11 @@ Output:
 }
 ```
 
-- Why?
-- `bind` / `call` / `apply` cannot change the reference of `this` within a `bind`ed function
+Why?
+
+- For binded this, it cannot be reassigned, even with .bind(), .apply() or .call()
+
+[reference](https://medium.com/javascript-scene/what-is-this-the-inner-workings-of-javascript-objects-d397bfa0708a)
 
 </p>
 </details>
@@ -246,7 +270,7 @@ Window;
 Why?
 
 - Arrow functions can never have their own this bound. Instead, they always delegate to the lexical scope (Window).
-- For arrow functions, this can't be reassigned, even with .call() or .bind()
+- For arrow functions, this can't be reassigned, even with .bind(), .apply() or .call()
 
 [reference](https://medium.com/javascript-scene/what-is-this-the-inner-workings-of-javascript-objects-d397bfa0708a)
 
@@ -322,6 +346,7 @@ Output:
 
 Why?
 
+- Last 3 console.log do apply GetValue to the result of evaluating Expression.
 - GetValue(lref) changes `this` to be global(window).
 
 [reference](https://github.com/mqyqingfeng/Blog/issues/7)
@@ -334,6 +359,7 @@ Why?
 ###### 10 What's the output?
 
 ```javascript
+// Begin pay attention
 let value = 1;
 let foo = {
   value: 2,
@@ -341,6 +367,7 @@ let foo = {
     return this.value;
   }
 };
+// End pay attention
 console.log(foo.bar());
 console.log(foo.bar());
 console.log((foo.bar = foo.bar)());
