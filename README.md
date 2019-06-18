@@ -70,9 +70,10 @@ delay(obj.getA, 100);
 <details><summary><b>Answer</b></summary>
 <p>
 
-Output: `getA: undefined`
+Output: `getA: undefined`. Why?
 
-`func(args)` will be `getA(window)` and `window.a` is `undefined`.
+- `func` is just a reference to `obj.getA`
+- `func(args)` will execute `obj.getA()` in global environment, and `this.a` refers to `window.a`, turns to be `undefined`.
 
 The right way:
 
