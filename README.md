@@ -68,11 +68,11 @@ delay(obj.getA, 100);
 <details><summary><b>Answer</b></summary>
 <p>
 
-output: `getA: undefined`
+Output: `getA: undefined`
 
-`func(args)` is the same to `getA(window)`.
+`func(args)` will be `getA(window)` and `window.a` is `undefined`.
 
-Here is the right way:
+The right way:
 
 ```javascript
 function delay(func, context, ms) {
@@ -112,7 +112,13 @@ setTimeout(obj.getA, 100);
 <details><summary><b>Answer</b></summary>
 <p>
 
-output: `getA: undefined`
+Output: `getA: undefined`. The right way:
+
+```javascript
+setTimeout(obj.getA.bind(obj), 100);
+```
+
+What know why? Read the next question⬇
 
 </p>
 </details>
@@ -138,7 +144,101 @@ doFoo(obj.getA);
 <details><summary><b>Answer</b></summary>
 <p>
 
-output: `getA: undefined`
+Output: `getA: undefined`.
+
+</p>
+</details>
+
+---
+
+###### 5 What's the output?
+
+```javascript
+obj = {
+  a: 1,
+  getA: () => {
+    console.log("getA: ", this.a);
+  }
+};
+setTimeout(obj.getA.bind(obj), 100);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output: `getA: undefined`.
+
+Within arrow function, `this` refers to the declare location, which equals `window`.
+
+</p>
+</details>
+
+---
+
+###### 6 What's the output?
+
+```javascript
+let boss1 = { name: "boss1" };
+let boss2 = { name: "boss2" };
+let boss1returnThis = function() {
+  return this;
+}.bind(boss1);
+console.log(boss1returnThis.bind(boss2)());
+console.log(boss1returnThis.apply(boss2));
+console.log(boss1returnThis.call(boss2));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+{
+  name: "boss1";
+}
+{
+  name: "boss1";
+}
+{
+  name: "boss1";
+}
+```
+
+- Why?
+- `bind` / `call` / `apply` cannot change the reference of `this` within a `bind`ed function
+
+</p>
+</details>
+
+---
+
+###### 7 What's the output?
+
+```javascript
+let boss1 = { name: "boss1" };
+let boss2 = { name: "boss2" };
+let boss1returnThis = (() => {
+  return this;
+}).bind(boss1);
+console.log(boss1returnThis.bind(boss2)());
+console.log(boss1returnThis.apply(boss2));
+console.log(boss1returnThis.call(boss2));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+Window;
+Window;
+Window;
+```
+
+- Why?
+- `bind` / `call` / `apply` cannot change the reference of `this` within an arrow function
 
 </p>
 </details>
