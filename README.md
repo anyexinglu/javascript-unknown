@@ -1,4 +1,4 @@
-Unknown things of javascript, inspired by [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS) and (javascript-questions)[https://github.com/anyexinglu/javascript-questions]
+Unknown things of javascript, inspired by [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS) and [javascript-questions](https://github.com/anyexinglu/javascript-questions)
 
 ---
 
