@@ -404,3 +404,73 @@ console.log(a, window.a, window.b);
 </details>
 
 ---
+
+###### 11 What's the output?
+
+```javascript
+a = [2, 3, 4, 5, 6, 7];
+a.b = "b";
+for (let key in a) {
+  console.log(key);
+}
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+0;
+1;
+2;
+3;
+4;
+5;
+b;
+```
+
+Why?
+
+- `for ... in` loop will iterates all enumerable, non-Symbol properties, includes `b`.
+
+</p>
+</details>
+
+---
+
+###### 12 What's the output?
+
+```javascript
+a = [2, 3, 4, 5, 6, 7];
+a.b = "b";
+for (let val of a) {
+  console.log(val);
+}
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+2;
+3;
+4;
+5;
+6;
+7;
+```
+
+Why?
+
+- The for...in statement iterates over the enumerable properties of an object, in an arbitrary order.
+- The for...of statement iterates over values that the iterable object defines to be iterated over.
+
+[reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of#Difference_between_for...of_and_for...in)
+
+</p>
+</details>
+
+---
