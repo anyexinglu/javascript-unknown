@@ -1,4 +1,4 @@
-Unknown things of javascript, inspired by https://github.com/getify/You-Dont-Know-JS and https://github.com/anyexinglu/javascript-questions
+Unknown things of javascript, inspired by [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS) and (javascript-questions)[https://github.com/anyexinglu/javascript-questions]
 
 ---
 
@@ -67,7 +67,8 @@ delay(obj.getA, 100);
 
 <details><summary><b>Answer</b></summary>
 <p>
-output: `getA:  undefined`
+
+output: `getA: undefined`
 
 `func(args)` is the same to `getA(window)`. Here is the right way:
 
