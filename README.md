@@ -479,3 +479,94 @@ Why?
 </details>
 
 ---
+
+###### 13 What's the output?
+
+```javascript
+class A {
+  x = 1;
+  getX() {
+    return this.x;
+  }
+}
+a = new A();
+b = Object.assign({}, a);
+c = { ...a };
+console.log(b, c, "getX" in x);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+`{x: 1} {x: 1} false`;
+```
+
+Why?
+
+- `Object.assign` & `...` & `...in...` only iterates enumerable, non-Symbol properties of the given object directly, excluding the properties of `x.__proto__`, `getter` and `setter`.
+
+</p>
+</details>
+
+---
+
+###### 14 What's the output?
+
+```javascript
+obj = { a: 1 };
+x = Object.create(obj);
+Object.defineProperty(x, "b", {
+  value: 2,
+  enumerable: false
+});
+x.c = 3;
+for (let k in x) {
+  console.log("key: " + k);
+}
+console.log(Object.getOwnPropertyNames(x));
+console.log(Object.keys(x));
+console.log(Object.assign({}, x));
+JSON.stringify(x);
+console.log(x.hasOwnProperty("a"), x.hasOwnProperty("c"));
+console.log("a" in x, "c" in x);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+key: c;
+key: a;
+["b", "c"];
+["c"]
+{c: 3}
+"{"c":3}"
+false true
+true true
+```
+
+Why?
+
+- `x = Object.create(obj)` creates a new object, using the existing object `obj` as the prototype of the newly created object `x`.
+- The `for...in` statement first iterates all enumerable, non-Symbol properties of `x`, then the properties of `x.__proto__` (obj), so `b` outputed easier than `a`.
+- `Object.getOwnPropertyNames` returns an array of all properties (including non-enumerable properties except for those which use Symbol) found directly in a given object, excluding the properties of `x.__proto__`.
+- `Object.keys` & `Object.assign` & `JSON.stringify` only iterates enumerable, non-Symbol properties of `x` directly, excluding the properties of `x.__proto__`.
+- `hasOwnProperty` returns true if the object directly has the specified property (including non-enumerable), excluding the properties of `x.__proto__`.
+- `"a" in x` is based on all properties of `x`, including the properties of `x.__proto__`.
+
+So remember the keywords:
+
+- `for...in`: excluding `non-enumerable`, including `__proto__`
+- `Object.getOwnPropertyNames` & `hasOwnProperty`: including `non-enumerable`, excluding `__proto__`
+- `Object.keys` & `Object.assign` & `JSON.stringify`: excluding `non-enumerable` & `__proto__`
+- `... in ...`: including `non-enumerable` & `__proto__`
+
+</p>
+</details>
+
+---
