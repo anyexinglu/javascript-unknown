@@ -651,3 +651,47 @@ Change `B.prototype = A.prototype` to `B.prototype = A`.
 </details>
 
 ---
+
+###### 17 What's the output?
+
+```javascript
+function Test(x) {
+  function F() {}
+  F.prototype = x;
+  return new F();
+}
+o = {
+  x: 1,
+  getX: function() {
+    return 111;
+  }
+};
+p = Test(o);
+q = Object.create(o);
+
+console.log(p);
+console.log(q);
+console.log(p.__proto__ === q.__proto__);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+F {}
+{}
+true
+```
+
+Why?
+
+- `p.__proto__` equals `(new F()).__proto__` equals `F.prototype` equals `o`
+- `q = Object.create(o)` makes `q.__proto__` equals `o`
+- `Test` is polyfill of `Object.create` for browsers which doesn't support es5. [reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Polyfill)
+
+</p>
+</details>
+
+---
