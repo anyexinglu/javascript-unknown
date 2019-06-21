@@ -553,18 +553,99 @@ true true
 Why?
 
 - `x = Object.create(obj)` creates a new object, using the existing object `obj` as the prototype of the newly created object `x`.
-- The `for...in` statement first iterates all enumerable, non-Symbol properties of `x`, then the properties of `x.__proto__` (obj), so `b` outputed easier than `a`.
-- `Object.getOwnPropertyNames` returns an array of all properties (including non-enumerable properties except for those which use Symbol) found directly in a given object, excluding the properties of `x.__proto__`.
-- `Object.keys` & `Object.assign` & `JSON.stringify` only iterates enumerable, non-Symbol properties of `x` directly, excluding the properties of `x.__proto__`.
-- `hasOwnProperty` returns true if the object directly has the specified property (including non-enumerable), excluding the properties of `x.__proto__`.
-- `"a" in x` is based on all properties of `x`, including the properties of `x.__proto__`.
 
-So remember the keywords:
+Remember the keywords:
 
 - `for...in`: excluding `non-enumerable`, including `__proto__`
 - `Object.getOwnPropertyNames` & `hasOwnProperty`: including `non-enumerable`, excluding `__proto__`
 - `Object.keys` & `Object.assign` & `JSON.stringify`: excluding `non-enumerable` & `__proto__`
 - `... in ...`: including `non-enumerable` & `__proto__`
+
+</p>
+</details>
+
+---
+
+###### 15 What's the output?
+
+```javascript
+a = { x: 2 };
+b = Object.create(a);
+console.log(b.hasOwnProperty("x"));
+b.x++;
+console.log(b.hasOwnProperty("x"));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+false;
+true;
+```
+
+Why?
+
+- Object.create creates a new object, using the existing object as the prototype of the newly created object.
+- `b.x++` will run `b.x = b.x + 1`, which will add own property `x` for `b`.
+
+</p>
+</details>
+
+---
+
+###### 16 What's the output?
+
+```javascript
+function A(name) {
+  this.name = name;
+}
+A.prototype.myName = function() {
+  return this.name;
+};
+
+function B(name, label) {
+  A.call(this, name);
+  this.label = label;
+}
+
+function C(name, label) {
+  A.call(this, name);
+  this.label = label;
+}
+
+B.prototype = A.prototype;
+C.prototype = new A();
+B.prototype.myName = function() {
+  return 111;
+};
+
+x = new A("xxx");
+y = new B("yyy");
+z = new C("zzz");
+console.log(x.myName(), y.myName(), z.myName());
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+111 111 111
+```
+
+Why?
+
+- `B.prototype = A.prototype` is assign the reference of object `A.prototype` to `B.prototype`, so `B.prototype.myName=....` changes `A.prototype.myName`.
+- `new A()` returns `{name: undefined}`, `C.prototype = new A()` means `C.prototype = {name: undefined}`.
+- Since `z.__proto__`( === `C.prototype`) has no `myName`, so `z.myName` will be `z.__proto__.__proto__.myName`( === `C.prototype.__proto__.myName`)
+- Since `C.prototype.__proto__ === A.prototype`, so `C.prototype.__proto__.myName` will be `A.prototype.myName`, which has changed by `B.prototype.myName=....`.
+
+So how to make `A.prototype.myName` unchanged when setting `B.prototype.myName=....`?
+Change `B.prototype = A.prototype` to `B.prototype = A`.
 
 </p>
 </details>
