@@ -492,7 +492,7 @@ class A {
 a = new A();
 b = Object.assign({}, a);
 c = { ...a };
-console.log(b, c, "getX" in b);
+console.log(b, c, "getX" in b, "getX" in c);
 ```
 
 <details><summary><b>Answer</b></summary>
@@ -501,7 +501,7 @@ console.log(b, c, "getX" in b);
 Output:
 
 ```javascript
-`{x: 1} {x: 1} false`;
+`{x: 1} {x: 1} false false`;
 ```
 
 Why?
