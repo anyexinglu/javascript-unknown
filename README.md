@@ -645,7 +645,6 @@ Why?
 - Since `C.prototype.__proto__ === A.prototype`, so `C.prototype.__proto__.myName` will be `A.prototype.myName`, which has changed by `B.prototype.myName=....`.
 
 So how to make `A.prototype.myName` unchanged when setting `B.prototype.myName=....`?
-Change `B.prototype = A.prototype` to `B.prototype = A`.
 
 </p>
 </details>
@@ -690,6 +689,53 @@ Why?
 - `p.__proto__` equals `(new F()).__proto__` equals `F.prototype` equals `o`
 - `q = Object.create(o)` makes `q.__proto__` equals `o`
 - `Test` is polyfill of `Object.create` for browsers which doesn't support es5. [reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Polyfill)
+
+</p>
+</details>
+
+###### 18 What's the output?
+
+```javascript
+function Animal(name) {
+  this.name = name || "Animal";
+  this.sleep = function() {
+    console.log(this.name + "is sleeping.");
+  };
+}
+function Cat() {}
+Cat.prototype = new Animal();
+Cat.prototype.name = "Cat";
+
+function Dog() {}
+Dog.prototype = Object.create(Animal.prototype);
+
+cat = new Cat();
+dog = new Dog();
+Animal.prototype.eat = function(food) {
+  console.log(this.name + " is eating " + food);
+};
+console.log(cat.eat("fish"));
+console.log(dog.eat("rice"));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+cat is eating fish
+dog is eating rice
+```
+
+Why?
+
+- `cat.__proto__.__proto__` equals `(Cat.prototype).__proto__` equals `Animal.prototype`
+- `cat.eat('fish')` will call`cat.__proto__.__proto__.eat('fish')`
+- `dog.__proto__` equals `Dog.prototype` equals `Animal.prototype`
+- `dog.eat("rice")` will call`dog.__proto__.eat('rice')`
+
+It means that properties of `Animal.prototype` will be shared by all instances, including those `inherited` earlier.
 
 </p>
 </details>
