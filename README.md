@@ -690,6 +690,20 @@ Why?
 - `p.__proto__` equals `(new F()).__proto__` equals `F.prototype` equals `o`
 - `q = Object.create(o)` makes `q.__proto__` equals `o`
 - `Test` is polyfill of `Object.create` for browsers which doesn't support es5. [reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Polyfill)
+- So, don't mock class by setting `__proto__` / `prototype` / `new`, just use `Object.create`:
+
+```javascript
+let Widget = {
+  init: function(width, height) {
+    this.width = width || 50;
+  }
+};
+let Button = Object.create(Widget);
+Button.setup = function(width, height, label) {
+  this.init(width, height);
+  this.label = label || "Default";
+};
+```
 
 </p>
 </details>
