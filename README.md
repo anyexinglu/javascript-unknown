@@ -492,7 +492,7 @@ class A {
 a = new A();
 b = Object.assign({}, a);
 c = { ...a };
-console.log(b, c, "getX" in x);
+console.log(b, c, "getX" in b);
 ```
 
 <details><summary><b>Answer</b></summary>
