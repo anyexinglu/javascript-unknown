@@ -645,6 +645,7 @@ Why?
 - Since `C.prototype.__proto__ === A.prototype`, so `C.prototype.__proto__.myName` will be `A.prototype.myName`, which has changed by `B.prototype.myName=....`.
 
 So how to make `A.prototype.myName` unchanged when setting `B.prototype.myName=....`?
+Fix `B.prototype = A.prototype` by `B.prototype = Object.create(A.prototype)`
 
 </p>
 </details>
