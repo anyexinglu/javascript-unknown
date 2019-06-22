@@ -655,6 +655,39 @@ Fix `B.prototype = A.prototype` by `B.prototype = Object.create(A.prototype)`
 ###### 17 What's the output?
 
 ```javascript
+class C {
+  constructor() {
+    this.num = Math.random();
+  }
+}
+c1 = new C();
+C.prototype.rand = function() {
+  console.log("Random: " + Math.round(this.num * 1000));
+};
+c1.rand();
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+Random: 890; // a random number between 0~1000
+```
+
+Why?
+
+- `class` in js is made with [[Prototype]], so `c1.__proto__` === `C.prototype`
+
+</p>
+</details>
+
+---
+
+###### 18 What's the output?
+
+```javascript
 function Test(x) {
   function F() {}
   F.prototype = x;
@@ -708,7 +741,7 @@ Button.setup = function(width, height, label) {
 </p>
 </details>
 
-###### 18 What's the output?
+###### 19 What's the output?
 
 ```javascript
 function Animal(name) {
