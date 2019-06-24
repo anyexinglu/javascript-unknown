@@ -789,3 +789,29 @@ It means that properties of `Animal.prototype` will be shared by all instances, 
 </details>
 
 ---
+
+###### 20 What's the output?
+
+```javascript
+a = [1, 2, 3, 4];
+delete a[1];
+console.log(a.length);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+4;
+```
+
+Why?
+
+- After `delete a[1]`, a becomes `[1, empty, 3, 4]`
+
+</p>
+</details>
+
+---
