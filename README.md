@@ -844,3 +844,38 @@ Within `42.toFixed(3)`, the `.` will be regarded as a part of number, so `(42.)t
   </details>
 
 ---
+
+###### 22 What's the output?
+
+```javascript
+console.log(0.1 + 0.2 === 0.3);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+false;
+```
+
+Why?
+
+For lauguage following `IEEE 754` rule such as javascript, `0.1 + 0.2` outputs `0.30000000000000004`.
+
+A safe way to comprare values:
+
+```javascript
+function numbersCloseEnoughToEqual(n1, n2) {
+  return Math.abs(n1 - n2) < Number.EPSILON; // Number.EPSILON: 2.220446049250313e-16
+}
+let a = 0.1 + 0.2;
+let b = 0.3;
+numbersCloseEnoughToEqual(a, b);
+```
+
+</p>
+</details>
+
+---
