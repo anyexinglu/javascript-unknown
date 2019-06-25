@@ -838,7 +838,7 @@ Within `42.toFixed(3)`, the `.` will be regarded as a part of number, so `(42.)t
 // Correct:
 
 - (42).toFixed(3); // "42.000"
-- 0.42.toFixed(3); // "0.420"
+- num = 42; num.toFixed(3); // "42.000"
 - 42..toFixed(3); // "42.000"
   </p>
   </details>
