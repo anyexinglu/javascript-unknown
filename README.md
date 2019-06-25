@@ -815,3 +815,32 @@ Why?
 </details>
 
 ---
+
+###### 21 What's the output?
+
+```javascript
+console.log(42.toFixed(3));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+Uncaught SyntaxError: Invalid or unexpected token
+```
+
+Why?
+
+Within `42.toFixed(3)`, the `.` will be regarded as a part of number, so `(42.)toFixed(3)` throws error.
+
+// Correct:
+
+- (42).toFixed(3); // "42.000"
+- 0.42.toFixed(3); // "0.420"
+- 42..toFixed(3); // "42.000"
+  </p>
+  </details>
+
+---
