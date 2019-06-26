@@ -84,6 +84,80 @@ Within `else if (payload.status === "done") { const newlist = list.map(item => {
 
 ---
 
+###### 2 What's the output?
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+const { useState } = React;
+
+let id = 0;
+
+function Demo(props) {
+  const { list, onChange } = props;
+  const cloneList = {...list}
+  const onStatus = payload => {
+    if (payload.status === "posting") {
+      onChange([...cloneList, payload]);
+    } else if (payload.status === "done") {
+      const newlist = cloneList.map(item => {
+        if (item.id === payload.id) {
+          return payload;
+        }
+        return item;
+      });
+      onChange(newlist);
+    }
+  };
+
+  const post = () =>
+    new Promise((resolve, reject) => {
+      id++;
+      const payload = { id: id };
+      onStatus({ ...payload, status: "posting" });
+      setTimeout(() => {
+        resolve(payload);
+      }, 100);
+    }).then(payload => {
+      onStatus({ ...payload, status: "done" });
+    });
+
+  console.log("list", list);
+
+  return (
+    <div>
+      <button onClick={() => post()}>post</button>
+      list: {JSON.stringify(list)}
+    </div>
+  );
+}
+
+function App() {
+  const [list, setList] = useState([]);
+  const handleChange = list => setList(list);
+  return <Demo list={list} onChange={handleChange} />;
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+```
+list: [{id: 1, status: 'done'}]
+```
+
+Why?
+
+`cloneList` are always the latest value of `props.list`.
+
+</p>
+</details>
+
+---
+
 ## javascript
 
 ---
