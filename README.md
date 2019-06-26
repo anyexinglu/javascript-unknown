@@ -8,7 +8,7 @@ BTW, all the following examples are running in non-strict mode.
 
 ## react
 
-All the following codes can run within https://codesandbox.io
+All the following codes can run within https://codesandbox.io/s/new
 
 ---
 
