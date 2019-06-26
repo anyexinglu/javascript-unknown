@@ -2,6 +2,9 @@ Unknown things of javascript, inspired by [You-Dont-Know-JS](https://github.com/
 
 BTW, all the following examples are running in non-strict mode.
 
+- [react](https://github.com/anyexinglu/javascript-unknown/blob/master/README.md#react)
+- [javascript](https://github.com/anyexinglu/javascript-unknown/blob/master/README.md#javascript)
+
 
 ## react
 
