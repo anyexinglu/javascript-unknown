@@ -73,6 +73,8 @@ ReactDOM.render(<App />, rootElement);
 
 ```
 list: []
+list: [{id: 1, status: 'posting'}]
+list: []
 ```
 
 Why?
@@ -97,10 +99,11 @@ function Demo(props) {
   const { list, onChange } = props;
 
   // Begin different with question 1
-  const cloneList = { ...list };
+  const cloneList = [...list];
   const onStatus = payload => {
     if (payload.status === "posting") {
-      onChange([...cloneList, payload]);
+      cloneList.push(payload);
+      onChange(cloneList);
     } else if (payload.status === "done") {
       const newlist = cloneList.map(item => {
         if (item.id === payload.id) {
@@ -149,6 +152,8 @@ ReactDOM.render(<App />, rootElement);
 <p>
 
 ```
+list: []
+list: [{id: 1, status: 'posting'}]
 list: [{id: 1, status: 'done'}]
 ```
 
