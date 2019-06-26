@@ -95,7 +95,9 @@ let id = 0;
 
 function Demo(props) {
   const { list, onChange } = props;
-  const cloneList = {...list}
+
+  // Begin different with question 1
+  const cloneList = { ...list };
   const onStatus = payload => {
     if (payload.status === "posting") {
       onChange([...cloneList, payload]);
@@ -109,6 +111,7 @@ function Demo(props) {
       onChange(newlist);
     }
   };
+  // End different with question 1
 
   const post = () =>
     new Promise((resolve, reject) => {
