@@ -5,7 +5,6 @@ BTW, all the following examples are running in non-strict mode.
 - [react](https://github.com/anyexinglu/javascript-unknown/blob/master/README.md#react)
 - [javascript](https://github.com/anyexinglu/javascript-unknown/blob/master/README.md#javascript)
 
-
 ## react
 
 All the following codes can run within https://codesandbox.io/s/new
@@ -15,48 +14,75 @@ All the following codes can run within https://codesandbox.io/s/new
 ###### 1 What's the output?
 
 ```javascript
-a = {
-  get val() {
-    return this.val;
-  },
-  set val(x) {
-    this.val = x;
-  }
-};
-a.val = 1;
-console.log(a.val);
+import React from "react";
+import ReactDOM from "react-dom";
+const { useState } = React;
+
+let id = 0;
+
+function Demo(props) {
+  const { list, onChange } = props;
+  const onStatus = payload => {
+    if (payload.status === "posting") {
+      onChange([...list, payload]);
+    } else if (payload.status === "done") {
+      const newlist = list.map(item => {
+        if (item.id === payload.id) {
+          return payload;
+        }
+        return item;
+      });
+      onChange(newlist);
+    }
+  };
+
+  const post = () =>
+    new Promise((resolve, reject) => {
+      id++;
+      const payload = { id: id };
+      onStatus({ ...payload, status: "posting" });
+      setTimeout(() => {
+        resolve(payload);
+      }, 100);
+    }).then(payload => {
+      onStatus({ ...payload, status: "done" });
+    });
+
+  console.log("list", list);
+
+  return (
+    <div>
+      <button onClick={() => post()}>post</button>
+      list: {JSON.stringify(list)}
+    </div>
+  );
+}
+
+function App() {
+  const [list, setList] = useState([]);
+  const handleChange = list => setList(list);
+  return <Demo list={list} onChange={handleChange} />;
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
 ```
 
 <details><summary><b>Answer</b></summary>
 <p>
 
 ```
-Uncaught RangeError: Maximum call stack size exceeded
-    at Object.set val [as val] (<anonymous>:6:12)
+list: []
 ```
 
-`this.val = x` invokes the setter again, which leads to an infinite loop. To avoid this, you need to store the actual value in a separate field of the object (e.g. this.\_val), and then have your getter return that value. Here's an example:
+Why?
 
-```javascript
-a = {
-  get val() {
-    return this._val;
-  },
-  set val(x) {
-    this._val = x;
-  }
-};
-a.val = 1;
-console.log(a.val);
-```
-
-[reference](https://stackoverflow.com/questions/43780287/javascript-uncaught-rangeerror-maximum-call-stack-size-exceeded)
+Within `else if (payload.status === "done") { const newlist = list.map(item => {`, the `list` is the original value `[]`.
 
 </p>
 </details>
 
 ---
-
 
 ## javascript
 
