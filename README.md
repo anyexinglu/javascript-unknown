@@ -1045,3 +1045,32 @@ numbersCloseEnoughToEqual(a, b);
 </details>
 
 ---
+
+###### 23 What's the output?
+
+```javascript
+a = "12" + 9;
+console.log(a, typeof a);
+b = "12" - 9;
+console.log(b, typeof b);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+129 string
+3 "number"
+```
+
+Why?
+
+- `string + number` will transform number to string, outputs string
+- `string - number` will transform string to number, outputs number
+
+</p>
+</details>
+
+---
