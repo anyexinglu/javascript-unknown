@@ -1074,3 +1074,38 @@ Why?
 </details>
 
 ---
+
+###### 24 What's the output?
+
+Run seperately:
+
+```javascript
+JSON.stringify(undefined);
+
+JSON.stringify(function() {});
+
+JSON.stringify([1, undefined, function() {}, 4]);
+
+JSON.stringify({ a: 2, b: function() {}, c: Symbol.for("ccc"), d: 1 });
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+undefined
+undefined
+[1,null,null,4]
+{"a":2,"d":1}
+```
+
+Why?
+
+JSON.stringify will ignore `undefined`, `function`, `symbol`
+
+</p>
+</details>
+
+---
