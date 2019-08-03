@@ -13,6 +13,109 @@ All the following codes can run within https://codesandbox.io/s/new
 
 ###### 1 What's the output?
 
+Click `Console.log`, then `Click me`. Wait for 3 seconds, what's the output?
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+const { useState } = React;
+
+function Demo() {
+  const [count, setCount] = useState(0);
+
+  function log() {
+    setTimeout(() => {
+      console.log("count: " + count);
+    }, 3000);
+  }
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+      <button onClick={log}>Console.log</button>
+    </div>
+  );
+}
+function App() {
+  const [list, setList] = useState([]);
+  const handleChange = list => setList(list);
+  return <Demo list={list} onChange={handleChange} />;
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+```
+count: 0
+```
+
+Why?
+
+Within every rerender, the `count` is new.
+
+</p>
+</details>
+
+---
+
+###### 2 What's the output?
+
+Click `add`, what's the output?
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+const { useState, useRef } = React;
+
+function Demo(props) {
+  const { list, onChange } = props;
+
+  const cloneList = [...list];
+  const cloneListRef = useRef(cloneList);
+  console.log("...render", cloneListRef.current === cloneList);
+  return (
+    <div>
+      <button onClick={() => onChange([...list, 1])}>add</button>
+      list: {JSON.stringify(list)}
+    </div>
+  );
+}
+
+function App() {
+  const [list, setList] = useState([]);
+  const handleChange = list => setList(list);
+  return <Demo list={list} onChange={handleChange} />;
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+```
+...render true // initial render
+...render false
+```
+
+Why?
+
+Within every rerender, the `cloneList` is new.
+And only in the first render, the `cloneList` equals `cloneListRef.current`.
+
+</p>
+</details>
+
+---
+
+###### 3 What's the output?
+
 ```javascript
 import React from "react";
 import ReactDOM from "react-dom";
@@ -36,17 +139,18 @@ function Demo(props) {
     }
   };
 
-  const post = () =>
-    new Promise((resolve, reject) => {
+  const post = async () => {
+    const payload = { id: id };
+    onStatus({ ...payload, status: "posting" });
+    return new Promise((resolve, reject) => {
       id++;
-      const payload = { id: id };
-      onStatus({ ...payload, status: "posting" });
       setTimeout(() => {
         resolve(payload);
-      }, 100);
+      }, 3000);
     }).then(payload => {
       onStatus({ ...payload, status: "done" });
     });
+  };
 
   console.log("list", list);
 
@@ -86,7 +190,9 @@ Within `else if (payload.status === "done") { const newlist = list.map(item => {
 
 ---
 
-###### 2 What's the output?
+###### 4 What's the output? (use a `cloneList` base on #3)
+
+Double click the button `post` quickly
 
 ```javascript
 import React from "react";
@@ -116,17 +222,18 @@ function Demo(props) {
   };
   // End different with question 1
 
-  const post = () =>
-    new Promise((resolve, reject) => {
+  const post = async () => {
+    const payload = { id: id };
+    onStatus({ ...payload, status: "posting" });
+    return new Promise((resolve, reject) => {
       id++;
-      const payload = { id: id };
-      onStatus({ ...payload, status: "posting" });
       setTimeout(() => {
         resolve(payload);
-      }, 100);
+      }, 3000);
     }).then(payload => {
       onStatus({ ...payload, status: "done" });
     });
+  };
 
   console.log("list", list);
 
@@ -154,12 +261,185 @@ ReactDOM.render(<App />, rootElement);
 ```
 list: []
 list: [{id: 1, status: 'posting'}]
-list: [{id: 1, status: 'done'}]
+list: [{id: 1, status: 'posting'}, {id: 2, status: 'posting'}]
+list: [{id: 1, status: 'posting'}, {id: 2, status: 'done'}]
 ```
 
 Why?
 
-`cloneList` are always the latest value of `props.list`.
+Within every rerender, the `cloneList` is new.
+How to fix it? Use `useRef`?
+
+</p>
+</details>
+
+---
+
+###### 5 What's the output? (`useRef` base on #4)
+
+Double click the button `post` quickly
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+const { useState, useRef } = React;
+
+let id = 0;
+
+function Demo(props) {
+  const { list, onChange } = props;
+
+  const cloneListRef = useRef(list);
+
+  const onStatus = payload => {
+    let cloneList = cloneListRef && cloneListRef.current.slice();
+    if (payload.status === "posting") {
+      cloneList.push(payload);
+      onChange(cloneList);
+    } else if (payload.status === "done") {
+      const newlist = cloneList.map(item => {
+        if (item.id === payload.id) {
+          return payload;
+        }
+        return item;
+      });
+      onChange(newlist);
+    }
+  };
+
+  const post = async () => {
+    const payload = { id: id };
+    onStatus({ ...payload, status: "posting" });
+    return new Promise((resolve, reject) => {
+      id++;
+      setTimeout(() => {
+        resolve(payload);
+      }, 3000);
+    }).then(payload => {
+      onStatus({ ...payload, status: "done" });
+    });
+  };
+  console.log("list", list);
+
+  return (
+    <div>
+      <button onClick={() => post()}>post</button>
+      list: {JSON.stringify(list)}
+    </div>
+  );
+}
+
+function App() {
+  const [list, setList] = useState([]);
+  const handleChange = list => setList(list);
+  return <Demo list={list} onChange={handleChange} />;
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+```
+list: []
+list: [{id: 0, status: 'posting'}]
+list: [{id: 1, status: 'posting'}]
+list: []
+list: []
+```
+
+Why?
+
+`cloneListRef` cached the value of `list` in first render, and then never change.
+
+</p>
+</details>
+
+---
+
+###### 6 What's the output? (update the ref value base on #5)
+
+Double click the button `post` quickly
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+const { useState, useRef, useEffect } = React;
+
+let id = 0;
+
+function Demo(props) {
+  const { list, onChange } = props;
+
+  const cloneListRef = useRef(list);
+  useEffect(() => {
+    cloneListRef.current = list;
+  }, [list]);
+
+  const onStatus = payload => {
+    let cloneList = cloneListRef && cloneListRef.current.slice();
+    if (payload.status === "posting") {
+      cloneList.push(payload);
+      onChange(cloneList);
+    } else if (payload.status === "done") {
+      const newlist = cloneList.map(item => {
+        if (item.id === payload.id) {
+          return payload;
+        }
+        return item;
+      });
+      onChange(newlist);
+    }
+  };
+
+  const post = async () => {
+    const payload = { id: id };
+    onStatus({ ...payload, status: "posting" });
+    return new Promise((resolve, reject) => {
+      id++;
+      setTimeout(() => {
+        resolve(payload);
+      }, 3000);
+    }).then(payload => {
+      onStatus({ ...payload, status: "done" });
+    });
+  };
+  console.log("list", list);
+
+  return (
+    <div>
+      <button onClick={() => post()}>post</button>
+      list: {JSON.stringify(list)}
+    </div>
+  );
+}
+
+function App() {
+  const [list, setList] = useState([]);
+  const handleChange = list => setList(list);
+  return <Demo list={list} onChange={handleChange} />;
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+```
+list: []
+list: [{id: 0, status: 'posting'}]
+list: [{id: 0, status: 'posting'}, {id: 1, status: 'posting'}]
+list: [{id: 0, status: 'done'}, {id: 1, status: 'posting'}]
+list: [{id: 0, status: 'done'}, {id: 1, status: 'done'}]
+```
+
+Why?
+
+Sync the value list to `cloneListRef.current` immediately, and the `onStatus` will use the updated value.
 
 </p>
 </details>
