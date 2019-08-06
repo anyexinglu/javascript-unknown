@@ -1389,3 +1389,105 @@ JSON.stringify will ignore `undefined`, `function`, `symbol`
 </details>
 
 ---
+
+###### 25 What's the output?
+
+```javascript
+a = Array(3);
+b = new Array(3);
+c = Array.apply(null, { length: 3 });
+d = [undefined, undefined, undefined];
+
+console.log(
+  a.map(function(v, i) {
+    return i;
+  })
+);
+console.log(
+  b.map(function(v, i) {
+    return i;
+  })
+);
+console.log(
+  c.map(function(v, i) {
+    return i;
+  })
+);
+console.log(
+  d.map(function(v, i) {
+    return i;
+  })
+);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+Different browsers may behave differently, while within current Chrome, the output is:
+
+```javascript
+[empty × 3]
+[empty × 3]
+[0, 1, 2]
+[0, 1, 2]
+```
+
+Why?
+
+- `Array(num)` is as same as `new Array(num)`, since the browser will auto add `new` in before of `Array(num)`
+- `new Array(3)` create a array, in which every member is `empty` unit (`undefined` type).
+- `a.map(..)` & `b.map(..)` will be failed, as the array is full of `empty`, `map` will not iterate them.
+
+</p>
+</details>
+---
+
+###### 26 What's the output?
+
+```javascript
+a = new Array(3);
+b = [undefined, undefined, undefined];
+
+console.log(a.join("-"));
+console.log(b.join("-"));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+Different browsers may behave differently, while within current Chrome, the output is:
+
+```javascript
+--
+--
+```
+
+Why?
+
+`join` works differently with `map`:
+
+```javascript
+function fakeJoin(arr, connector) {
+  var str = "";
+  for (var i = 0; i < arr.length; i++) {
+    if (i > 0) {
+      str += connector;
+    }
+    if (arr[i] !== undefined) {
+      str += arr[i];
+    }
+  }
+  return str;
+}
+var a = new Array(3);
+fakeJoin(a, "-"); // "--"
+```
+
+</p>
+</details>
+
+---
