@@ -448,11 +448,341 @@ Sync the value list to `cloneListRef.current` immediately, and the `onStatus` wi
 
 ## javascript
 
-## 1. this
+
+---
+
+## 1. js basic types
 
 ---
 
 ###### 1.1 What's the output?
+
+```javascript
+a = [1, 2, 3, 4];
+delete a[1];
+console.log(a.length);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+4;
+```
+
+Why?
+
+- After `delete a[1]`, a becomes `[1, empty, 3, 4]`
+
+</p>
+</details>
+
+---
+
+###### 1.2 What's the output?
+
+```javascript
+let list = [1, 2, 3, 4];
+let alreadyList = [2, 3];
+
+let cloneList = [...list];
+
+for (let i = 0; i < list.length - 1; i++) {
+  let item = list[i];
+  if (alreadyList.includes(item)) {
+    cloneList.splice(i, 1);
+  }
+}
+
+console.log("...", cloneList);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+[1, 3];
+```
+
+Why?
+
+- After `delete 2 - cloneList[1]`, cloneList becomes `[1, 3, 4]`
+- When `delete 3 - cloneList[2]`, cloneList becomes `[1, 3]`
+
+</p>
+</details>
+
+---
+
+###### 1.3 What's the output?
+
+```javascript
+console.log(42.toFixed(3));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+Uncaught SyntaxError: Invalid or unexpected token
+```
+
+Why?
+
+Within `42.toFixed(3)`, the `.` will be regarded as a part of number, so `(42.)toFixed(3)` throws error.
+
+// Correct:
+
+- (42).toFixed(3); // "42.000"
+- num = 42; num.toFixed(3); // "42.000"
+- 42..toFixed(3); // "42.000"
+  </p>
+  </details>
+
+---
+
+###### 1.4 What's the output?
+
+```javascript
+console.log(0.1 + 0.2 === 0.3);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+false;
+```
+
+Why?
+
+For lauguage following `IEEE 754` rule such as javascript, `0.1 + 0.2` outputs `0.30000000000000004`.
+
+A safe way to comprare values:
+
+```javascript
+function numbersCloseEnoughToEqual(n1, n2) {
+  return Math.abs(n1 - n2) < Number.EPSILON; // Number.EPSILON: 2.220446049250313e-16
+}
+let a = 0.1 + 0.2;
+let b = 0.3;
+numbersCloseEnoughToEqual(a, b);
+```
+
+</p>
+</details>
+
+---
+
+###### 1.5 What's the output?
+
+```javascript
+a = "12" + 9;
+console.log(a, typeof a);
+b = "12" - 9;
+console.log(b, typeof b);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+129 string
+3 "number"
+```
+
+Why?
+
+- `string + number` will transform number to string, outputs string
+- `string - number` will transform string to number, outputs number
+
+</p>
+</details>
+
+---
+
+###### 1.6 What's the output?
+
+Run seperately:
+
+```javascript
+JSON.stringify(undefined);
+
+JSON.stringify(function() {});
+
+JSON.stringify([1, undefined, function() {}, 4, new Date()]);
+
+JSON.stringify({ a: 2, b: function() {}, c: Symbol.for("ccc"), d: 1 });
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+undefined
+undefined
+[1,null,null,4,"2019-08-14T01:52:25.428Z"]
+{"a":2,"d":1}
+```
+
+Why?
+
+JSON.stringify will ignore `undefined`, `function`, `symbol`
+
+</p>
+</details>
+
+---
+
+###### 1.7 What's the output?
+
+```javascript
+a = Array(3);
+b = new Array(3);
+c = Array.apply(null, { length: 3 });
+d = [undefined, undefined, undefined];
+
+console.log(
+  a.map(function(v, i) {
+    return i;
+  })
+);
+console.log(
+  b.map(function(v, i) {
+    return i;
+  })
+);
+console.log(
+  c.map(function(v, i) {
+    return i;
+  })
+);
+console.log(
+  d.map(function(v, i) {
+    return i;
+  })
+);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+Different browsers may behave differently, while within current Chrome, the output is:
+
+```javascript
+[empty × 3]
+[empty × 3]
+[0, 1, 2]
+[0, 1, 2]
+```
+
+Why?
+
+- `Array(num)` is as same as `new Array(num)`, since the browser will auto add `new` in before of `Array(num)`
+- `new Array(3)` create a array, in which every member is `empty` unit (`undefined` type).
+- `a.map(..)` & `b.map(..)` will be failed, as the array is full of `empty`, `map` will not iterate them.
+
+</p>
+</details>
+
+---
+
+###### 1.8 What's the output?
+
+```javascript
+x = [1, 2, { a: 1 }];
+y = x;
+z = [...x];
+y[0] = 2;
+(y[2].b = 2), (z[2].a = 4);
+console.log(x, y, z);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+[2, 2, { a: 4, b: 2 }][(2, 2, { a: 4, b: 2 })][(1, 2, { a: 4, b: 2 })];
+```
+
+Why?
+
+- `z = [...x]` is shallow copy
+
+</p>
+</details>
+
+---
+
+###### 1.9 What's the output?
+
+```javascript
+a = new Array(3);
+b = [undefined, undefined, undefined];
+
+console.log(a.join("-"));
+console.log(b.join("-"));
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+Different browsers may behave differently, while within current Chrome, the output is:
+
+```javascript
+--
+--
+```
+
+Why?
+
+`join` works differently with `map`:
+
+```javascript
+function fakeJoin(arr, connector) {
+  var str = "";
+  for (var i = 0; i < arr.length; i++) {
+    if (i > 0) {
+      str += connector;
+    }
+    if (arr[i] !== undefined) {
+      str += arr[i];
+    }
+  }
+  return str;
+}
+var a = new Array(3);
+fakeJoin(a, "-"); // "--"
+```
+
+</p>
+</details>
+
+---
+
+## 2. this
+
+---
+
+###### 2.1 What's the output?
 
 ```javascript
 obj = {
@@ -520,7 +850,7 @@ Arrow functions can never have their own this bound. Instead, they always delega
 
 ---
 
-###### 1.3 What's the output?
+###### 2.3 What's the output?
 
 ```javascript
 function foo() {
@@ -555,7 +885,7 @@ Why?
 
 ---
 
-###### 1.4 What's the output?
+###### 2.4 What's the output?
 
 ```javascript
 let boss1 = { name: "boss1" };
@@ -590,7 +920,7 @@ Why?
 
 ---
 
-###### 1.5 What's the output?
+###### 2.5 What's the output?
 
 ```javascript
 let boss1 = { name: "boss1" };
@@ -628,7 +958,7 @@ Why?
 
 ---
 
-###### 1.6 What's the output?
+###### 2.6 What's the output?
 
 ```javascript
 var value = 1;
@@ -669,7 +999,7 @@ Why?
 
 ---
 
-###### 1.7 What's the output?
+###### 2.7 What's the output?
 
 ```javascript
 // Begin pay attention
@@ -716,11 +1046,11 @@ console.log(a, window.a, window.b);
 
 ---
 
-## 2. property
+## 3. property
 
 ---
 
-###### 2.1 What's the output?
+###### 3.1 What's the output?
 
 ```javascript
 x = Symbol("x");
@@ -756,7 +1086,7 @@ Why?
 
 ---
 
-###### 2.2 What's the output?
+###### 3.2 What's the output?
 
 ```javascript
 x = Symbol("x");
@@ -794,7 +1124,7 @@ Why?
 
 ---
 
-###### 2.3 What's the output?
+###### 3.3 What's the output?
 
 ```javascript
 class A {
@@ -827,7 +1157,7 @@ Why?
 
 ---
 
-###### 2.4 What's the output?
+###### 3.4 What's the output?
 
 ```javascript
 obj = { a: 1 };
@@ -880,7 +1210,7 @@ Remember the keywords:
 
 ---
 
-###### 2.5 What's the output?
+###### 3.5 What's the output?
 
 ```javascript
 a = { x: 2 };
@@ -910,11 +1240,11 @@ Why?
 
 ---
 
-## 3. `__proto__` && `prototype`
+## 4. `__proto__` && `prototype`
 
 ---
 
-###### 3.1 What's the output?
+###### 4.1 What's the output?
 
 ```javascript
 function A(name) {
@@ -970,7 +1300,7 @@ Fix `B.prototype = A.prototype` by `B.prototype = Object.create(A.prototype)`
 
 ---
 
-###### 3.2 What's the output?
+###### 4.2 What's the output?
 
 ```javascript
 class C {
@@ -1003,7 +1333,7 @@ Why?
 
 ---
 
-###### 3.3 What's the output?
+###### 4.3 What's the output?
 
 ```javascript
 function Test(oo) {
@@ -1059,7 +1389,7 @@ Button.setup = function(width, height, label) {
 </p>
 </details>
 
-###### 3.4 What's the output?
+###### 4.4 What's the output?
 
 ```javascript
 function Animal(name) {
@@ -1099,296 +1429,6 @@ Why?
 - `dog.eat("rice")` will call`dog.__proto__.eat('rice')`
 
 It means that properties of `Animal.prototype` will be shared by all instances, including those `inherited` earlier.
-
-</p>
-</details>
-
----
-
-## 4. js basic types
-
----
-
-###### 4.1 What's the output?
-
-```javascript
-a = [1, 2, 3, 4];
-delete a[1];
-console.log(a.length);
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-```javascript
-4;
-```
-
-Why?
-
-- After `delete a[1]`, a becomes `[1, empty, 3, 4]`
-
-</p>
-</details>
-
----
-
-###### 4.2 What's the output?
-
-```javascript
-console.log(42.toFixed(3));
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-```javascript
-Uncaught SyntaxError: Invalid or unexpected token
-```
-
-Why?
-
-Within `42.toFixed(3)`, the `.` will be regarded as a part of number, so `(42.)toFixed(3)` throws error.
-
-// Correct:
-
-- (42).toFixed(3); // "42.000"
-- num = 42; num.toFixed(3); // "42.000"
-- 42..toFixed(3); // "42.000"
-  </p>
-  </details>
-
----
-
-###### 4.3 What's the output?
-
-```javascript
-console.log(0.1 + 0.2 === 0.3);
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-```javascript
-false;
-```
-
-Why?
-
-For lauguage following `IEEE 754` rule such as javascript, `0.1 + 0.2` outputs `0.30000000000000004`.
-
-A safe way to comprare values:
-
-```javascript
-function numbersCloseEnoughToEqual(n1, n2) {
-  return Math.abs(n1 - n2) < Number.EPSILON; // Number.EPSILON: 2.220446049250313e-16
-}
-let a = 0.1 + 0.2;
-let b = 0.3;
-numbersCloseEnoughToEqual(a, b);
-```
-
-</p>
-</details>
-
----
-
-###### 4.4 What's the output?
-
-```javascript
-a = "12" + 9;
-console.log(a, typeof a);
-b = "12" - 9;
-console.log(b, typeof b);
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-```javascript
-129 string
-3 "number"
-```
-
-Why?
-
-- `string + number` will transform number to string, outputs string
-- `string - number` will transform string to number, outputs number
-
-</p>
-</details>
-
----
-
-###### 4.5 What's the output?
-
-Run seperately:
-
-```javascript
-JSON.stringify(undefined);
-
-JSON.stringify(function() {});
-
-JSON.stringify([1, undefined, function() {}, 4, new Date()]);
-
-JSON.stringify({ a: 2, b: function() {}, c: Symbol.for("ccc"), d: 1 });
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-```javascript
-undefined
-undefined
-[1,null,null,4,"2019-08-14T01:52:25.428Z"]
-{"a":2,"d":1}
-```
-
-Why?
-
-JSON.stringify will ignore `undefined`, `function`, `symbol`
-
-</p>
-</details>
-
----
-
-###### 4.6 What's the output?
-
-```javascript
-a = Array(3);
-b = new Array(3);
-c = Array.apply(null, { length: 3 });
-d = [undefined, undefined, undefined];
-
-console.log(
-  a.map(function(v, i) {
-    return i;
-  })
-);
-console.log(
-  b.map(function(v, i) {
-    return i;
-  })
-);
-console.log(
-  c.map(function(v, i) {
-    return i;
-  })
-);
-console.log(
-  d.map(function(v, i) {
-    return i;
-  })
-);
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-Different browsers may behave differently, while within current Chrome, the output is:
-
-```javascript
-[empty × 3]
-[empty × 3]
-[0, 1, 2]
-[0, 1, 2]
-```
-
-Why?
-
-- `Array(num)` is as same as `new Array(num)`, since the browser will auto add `new` in before of `Array(num)`
-- `new Array(3)` create a array, in which every member is `empty` unit (`undefined` type).
-- `a.map(..)` & `b.map(..)` will be failed, as the array is full of `empty`, `map` will not iterate them.
-
-</p>
-</details>
-
----
-
-###### 4.7 What's the output?
-
-```javascript
-x = [1, 2, { a: 1 }];
-y = x;
-z = [...x];
-y[0] = 2;
-(y[2].b = 2), (z[2].a = 4);
-console.log(x, y, z);
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-```javascript
-[2, 2, { a: 4, b: 2 }][(2, 2, { a: 4, b: 2 })][(1, 2, { a: 4, b: 2 })];
-```
-
-Why?
-
-- `z = [...x]` is shallow copy
-
-</p>
-</details>
-
----
-
-###### 4.8 What's the output?
-
-```javascript
-a = new Array(3);
-b = [undefined, undefined, undefined];
-
-console.log(a.join("-"));
-console.log(b.join("-"));
-```
-
-<details><summary><b>Answer</b></summary>
-<p>
-
-Output:
-
-Different browsers may behave differently, while within current Chrome, the output is:
-
-```javascript
---
---
-```
-
-Why?
-
-`join` works differently with `map`:
-
-```javascript
-function fakeJoin(arr, connector) {
-  var str = "";
-  for (var i = 0; i < arr.length; i++) {
-    if (i > 0) {
-      str += connector;
-    }
-    if (arr[i] !== undefined) {
-      str += arr[i];
-    }
-  }
-  return str;
-}
-var a = new Array(3);
-fakeJoin(a, "-"); // "--"
-```
 
 </p>
 </details>
