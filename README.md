@@ -1418,7 +1418,7 @@ Output:
 
 ```javascript
 cat is eating fish
-dog is eating rice
+undefined is eating rice
 ```
 
 Why?
