@@ -863,7 +863,7 @@ Question：How to change `x(); setTimeout(obj.getA, 100);`, make it output `getA
 
 ---
 
-###### 1.2 What's the output?
+###### 2.2 What's the output?
 
 ```javascript
 obj = {
