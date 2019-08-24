@@ -443,11 +443,50 @@ Sync the value list to `cloneListRef.current` immediately, and the `onStatus` wi
 
 </p>
 </details>
- 
+
+---
+
+###### 6 What's the output?
+
+blur the `Input`
+
+```javascript
+const { useState } = React;
+
+const logValue = e => {
+  console.log("...e", e.target.value);
+};
+
+const Demo = () => {
+  const handleBlur = e => {
+    setTimeout(() => {
+      logValue(e);
+    });
+  };
+  return <input value={23} onBlur={handleBlur} />;
+};
+
+export default Demo;
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+```
+Warning: This synthetic event is reused for performance reasons. If you're seeing this, you're accessing the property `target` on a released/nullified synthetic event. This is set to null. If you must keep the original synthetic event around, use event.persist(). See https://fb.me/react-event-pooling for more information.
+VM33:12 Uncaught TypeError: Cannot read property 'value' of null
+```
+
+Why?
+
+[event-pooling](https://reactjs.org/docs/events.html#event-pooling)
+
+</p>
+</details>
+
 ---
 
 ## javascript
-
 
 ---
 
