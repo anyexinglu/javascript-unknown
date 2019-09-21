@@ -1473,3 +1473,54 @@ It means that properties of `Animal.prototype` will be shared by all instances, 
 </details>
 
 ---
+
+## 5. setTimeout & ……
+
+---
+
+###### 5.1 What's the output?
+
+```javascript
+
+setImmediate(function(){
+    console.log(1);
+},0);
+setTimeout(function(){
+    console.log(2);
+},0);   
+new Promise(function(resolve){
+    console.log(3);
+    resolve();
+    console.log(4);
+}).then(function(){
+    console.log(5);
+});
+console.log(6);
+console.log(8);
+```
+
+<details><summary><b>Answer</b></summary>
+<p>
+
+Output:
+
+```javascript
+3 4 6 8 5 1 2
+```
+
+Why?
+
+- macrotasks: setTimeout，setInterval， setImmediate，requestAnimationFrame，I/O，UI渲染
+- microtasks: Promise， process.nextTick， Object.observe， MutationObserver
+
+当一个程序有：setTimeout， setInterval ，setImmediate， I/O， UI渲染，Promise ，process.nextTick，Object.observe， MutationObserver的时候：
+- 1. 先执行 macrotasks：I/O -》 UI渲染-》requestAnimationFrame
+- 2. 再执行 microtasks ：process.nextTick -》 Promise -》MutationObserver ->Object.observe
+- 3. 再把setTimeout setInterval setImmediate【三个货不讨喜】 塞入一个新的macrotasks，依次：setImmediate, setInterval, setTimeout.
+
+Reference: [Vue 中如何使用 MutationObserver 做批量处理？](https://www.zhihu.com/question/55364497/answer/254054336)
+
+</p>
+</details>
+
+---
