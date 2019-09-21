@@ -1514,9 +1514,9 @@ Why?
 - microtasks: Promise， process.nextTick， Object.observe， MutationObserver
 
 当一个程序有：setTimeout， setInterval ，setImmediate， I/O， UI渲染，Promise ，process.nextTick，Object.observe， MutationObserver的时候：
-- 1. 先执行 macrotasks：I/O -》 UI渲染-》requestAnimationFrame
-- 2. 再执行 microtasks ：process.nextTick -》 Promise -》MutationObserver ->Object.observe
-- 3. 再把setTimeout setInterval setImmediate【三个货不讨喜】 塞入一个新的macrotasks，依次：setImmediate, setInterval, setTimeout.
+- 先执行 macrotasks：I/O -》 UI渲染-》requestAnimationFrame
+- 再执行 microtasks ：process.nextTick -》 Promise -》MutationObserver ->Object.observe
+- 再把setTimeout setInterval setImmediate【三个货不讨喜】 塞入一个新的macrotasks，依次：setImmediate, setInterval, setTimeout.
 
 Reference: [Vue 中如何使用 MutationObserver 做批量处理？](https://www.zhihu.com/question/55364497/answer/254054336)
 
