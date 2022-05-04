@@ -598,7 +598,7 @@ JSON.stringify(function() {});
 
 JSON.stringify([1, undefined, function() {}, 4, new Date()]);
 
-JSON.stringify({ a: 2, b: function() {}, c: Symbol.for("ccc"), d: 1 });
+JSON.stringify({ a: 2, b: function() {}, c: Symbol.for("ccc"), d: 1, e: undefined });
 ```
 
 <details><summary><b>Answer</b></summary>
