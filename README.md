@@ -111,6 +111,8 @@ And only in the first render, the `cloneList` equals `cloneListRef.current`.
 
 ###### 3 What's the output?
 
+Click `post`, what's the output?
+
 ```javascript
 import React from "react";
 import ReactDOM from "react-dom";
@@ -172,7 +174,7 @@ ReactDOM.render(<App />, rootElement);
 
 ```
 list: []
-list: [{id: 1, status: 'posting'}]
+list: [{id: 0, status: 'posting'}]
 list: []
 ```
 
@@ -255,14 +257,15 @@ ReactDOM.render(<App />, rootElement);
 
 ```
 list: []
-list: [{id: 1, status: 'posting'}]
-list: [{id: 1, status: 'posting'}, {id: 2, status: 'posting'}]
-list: [{id: 1, status: 'posting'}, {id: 2, status: 'done'}]
+list: [{id: 0, status: 'posting'}]
+list: [{id: 0, status: 'posting'}, {id: 1, status: 'posting'}]
+list: [{id: 0, status: 'done'}]
+list: [{id: 0, status: 'posting'}, {id: 1, status: 'done'}]
 ```
 
 Why?
 
-Within every rerender, the `cloneList` is new.
+Within every onStatus, the `cloneList` is old（closure problem）.
 How to fix it? Use `useRef`?
 
 </p>
