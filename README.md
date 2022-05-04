@@ -37,14 +37,9 @@ function Demo() {
     </div>
   );
 }
-function App() {
-  const [list, setList] = useState([]);
-  const handleChange = list => setList(list);
-  return <Demo list={list} onChange={handleChange} />;
-}
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(<Demo />, rootElement);
 ```
 
 <details><summary><b>Answer</b></summary>
@@ -56,7 +51,7 @@ count: 0
 
 Why?
 
-Within every rerender, the `count` is new.
+Within every rerender, the `count` is old in setTimeout.
 
 </p>
 </details>
