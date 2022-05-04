@@ -115,38 +115,30 @@ Click `post`, what's the output?
 
 ```javascript
 import React from "react";
-import ReactDOM from "react-dom";
 const { useState } = React;
 
 let id = 0;
 
-function Demo(props) {
-  const { list, onChange } = props;
-  const onStatus = payload => {
+export default function App() {
+  const [list, onChange] = useState([]);
+  const onStatus = (payload) => {
     if (payload.status === "posting") {
       onChange([...list, payload]);
     } else if (payload.status === "done") {
-      const newlist = list.map(item => {
-        if (item.id === payload.id) {
-          return payload;
-        }
-        return item;
-      });
+      const newlist = list.map((item) =>
+        item.id === payload.id ? payload : item
+      );
       onChange(newlist);
     }
   };
 
-  const post = async () => {
+  const post = () => {
     const payload = { id: id };
     onStatus({ ...payload, status: "posting" });
-    return new Promise((resolve, reject) => {
-      id++;
-      setTimeout(() => {
-        resolve(payload);
-      }, 3000);
-    }).then(payload => {
+    id++;
+    setTimeout(() => {
       onStatus({ ...payload, status: "done" });
-    });
+    }, 3000);
   };
 
   console.log("list", list);
@@ -158,15 +150,6 @@ function Demo(props) {
     </div>
   );
 }
-
-function App() {
-  const [list, setList] = useState([]);
-  const handleChange = list => setList(list);
-  return <Demo list={list} onChange={handleChange} />;
-}
-
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
 ```
 
 <details><summary><b>Answer</b></summary>
@@ -193,43 +176,35 @@ Double click the button `post` quickly
 
 ```javascript
 import React from "react";
-import ReactDOM from "react-dom";
 const { useState } = React;
 
 let id = 0;
 
-function Demo(props) {
-  const { list, onChange } = props;
+export default function App() {
+  const [list, onChange] = useState([]);
 
-  // Begin different with question 1
+  // Begin different with previous question
   const cloneList = [...list];
-  const onStatus = payload => {
+  const onStatus = (payload) => {
     if (payload.status === "posting") {
       cloneList.push(payload);
       onChange(cloneList);
     } else if (payload.status === "done") {
-      const newlist = cloneList.map(item => {
-        if (item.id === payload.id) {
-          return payload;
-        }
-        return item;
-      });
+      const newlist = cloneList.map((item) =>
+        item.id === payload.id ? payload : item
+      );
       onChange(newlist);
     }
   };
-  // End different with question 1
+  // End different with previous question
 
-  const post = async () => {
+  const post = () => {
     const payload = { id: id };
     onStatus({ ...payload, status: "posting" });
-    return new Promise((resolve, reject) => {
-      id++;
-      setTimeout(() => {
-        resolve(payload);
-      }, 3000);
-    }).then(payload => {
+    id++;
+    setTimeout(() => {
       onStatus({ ...payload, status: "done" });
-    });
+    }, 3000);
   };
 
   console.log("list", list);
@@ -241,15 +216,6 @@ function Demo(props) {
     </div>
   );
 }
-
-function App() {
-  const [list, setList] = useState([]);
-  const handleChange = list => setList(list);
-  return <Demo list={list} onChange={handleChange} />;
-}
-
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
 ```
 
 <details><summary><b>Answer</b></summary>
@@ -279,44 +245,39 @@ Double click the button `post` quickly
 
 ```javascript
 import React from "react";
-import ReactDOM from "react-dom";
 const { useState, useRef } = React;
 
 let id = 0;
 
-function Demo(props) {
-  const { list, onChange } = props;
+export default function App() {
+  const [list, onChange] = useState([]);
 
+  // Begin different with previous question
   const cloneListRef = useRef(list);
 
   const onStatus = payload => {
     let cloneList = cloneListRef && cloneListRef.current.slice();
+    // End different with previous question
     if (payload.status === "posting") {
       cloneList.push(payload);
       onChange(cloneList);
     } else if (payload.status === "done") {
-      const newlist = cloneList.map(item => {
-        if (item.id === payload.id) {
-          return payload;
-        }
-        return item;
-      });
+      const newlist = cloneList.map((item) =>
+        item.id === payload.id ? payload : item
+      );
       onChange(newlist);
     }
   };
 
-  const post = async () => {
+  const post = () => {
     const payload = { id: id };
     onStatus({ ...payload, status: "posting" });
-    return new Promise((resolve, reject) => {
-      id++;
-      setTimeout(() => {
-        resolve(payload);
-      }, 3000);
-    }).then(payload => {
+    id++;
+    setTimeout(() => {
       onStatus({ ...payload, status: "done" });
-    });
+    }, 3000);
   };
+
   console.log("list", list);
 
   return (
@@ -326,15 +287,6 @@ function Demo(props) {
     </div>
   );
 }
-
-function App() {
-  const [list, setList] = useState([]);
-  const handleChange = list => setList(list);
-  return <Demo list={list} onChange={handleChange} />;
-}
-
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
 ```
 
 <details><summary><b>Answer</b></summary>
@@ -363,47 +315,43 @@ Double click the button `post` quickly
 
 ```javascript
 import React from "react";
-import ReactDOM from "react-dom";
 const { useState, useRef, useEffect } = React;
 
 let id = 0;
 
-function Demo(props) {
-  const { list, onChange } = props;
-
+export default function App() {
+  const [list, onChange] = useState([]);
   const cloneListRef = useRef(list);
+
+  // Begin different with previous question
   useEffect(() => {
     cloneListRef.current = list;
   }, [list]);
 
   const onStatus = payload => {
-    let cloneList = cloneListRef && cloneListRef.current.slice();
+    let cloneList = cloneListRef && cloneListRef.current.slice(); 
+    // End different with previous question
+    
     if (payload.status === "posting") {
       cloneList.push(payload);
       onChange(cloneList);
     } else if (payload.status === "done") {
-      const newlist = cloneList.map(item => {
-        if (item.id === payload.id) {
-          return payload;
-        }
-        return item;
-      });
+      const newlist = cloneList.map((item) =>
+        item.id === payload.id ? payload : item
+      );
       onChange(newlist);
     }
   };
 
-  const post = async () => {
+  const post = () => {
     const payload = { id: id };
     onStatus({ ...payload, status: "posting" });
-    return new Promise((resolve, reject) => {
-      id++;
-      setTimeout(() => {
-        resolve(payload);
-      }, 3000);
-    }).then(payload => {
+    id++;
+    setTimeout(() => {
       onStatus({ ...payload, status: "done" });
-    });
+    }, 3000);
   };
+
   console.log("list", list);
 
   return (
@@ -413,15 +361,6 @@ function Demo(props) {
     </div>
   );
 }
-
-function App() {
-  const [list, setList] = useState([]);
-  const handleChange = list => setList(list);
-  return <Demo list={list} onChange={handleChange} />;
-}
-
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
 ```
 
 <details><summary><b>Answer</b></summary>
