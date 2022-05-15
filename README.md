@@ -1442,7 +1442,8 @@ console.log(8);
 Output:
 
 ```javascript
-3 4 6 8 5 1 2
+3 4 6 8 5 2 1
+// （理论上开始 setTimeout 和 setImmediate 顺序不稳定，但我 Node v16.14.0 测下来多次都是如此 ）
 ```
 
 Why?
@@ -1453,7 +1454,7 @@ Why?
 当一个程序有：setTimeout， setInterval ，setImmediate， I/O， UI渲染，Promise ，process.nextTick，Object.observe， MutationObserver的时候：
 - 先执行 macrotasks：I/O -》 UI渲染-》requestAnimationFrame
 - 再执行 microtasks ：process.nextTick -》 Promise -》MutationObserver ->Object.observe
-- 再把setTimeout setInterval setImmediate【三个货不讨喜】 塞入一个新的macrotasks，依次：setImmediate, setInterval, setTimeout.
+- 再把setTimeout setInterval setImmediate【三个货不讨喜】 塞入一个新的macrotasks.
 
 Reference: [Vue 中如何使用 MutationObserver 做批量处理？](https://www.zhihu.com/question/55364497/answer/254054336)
 
